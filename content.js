@@ -39,6 +39,8 @@ window.addEventListener('scroll', (event) => {
     const newScroll = window.scrollY;
     if (newScroll > (window.oldScroll || 0)) {
         scrollDistance += newScroll - (window.oldScroll || 0);
+    } else if (newScroll < (window.oldScroll || 0)) {
+        scrollDistance -= (window.oldScroll || 0) - newScroll;
     }
     window.oldScroll = window.scrollY;
     if (scrollDistance >= scrollLimit) {
