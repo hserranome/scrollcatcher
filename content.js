@@ -36,7 +36,10 @@ function showModal() {
 }
 
 window.addEventListener('scroll', (event) => {
-    scrollDistance += Math.abs(window.scrollY - (window.oldScroll || 0));
+    const newScroll = window.scrollY;
+    if (newScroll > (window.oldScroll || 0)) {
+        scrollDistance += newScroll - (window.oldScroll || 0);
+    }
     window.oldScroll = window.scrollY;
     if (scrollDistance >= scrollLimit) {
         showModal();
