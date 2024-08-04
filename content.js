@@ -7,8 +7,6 @@ const maxImageLevel = 2;
 function showModal() {
     if (!modalDisplayed) {
         modalDisplayed = true;
-        document.documentElement.style.overflow = 'hidden'; // Disable scrolling
-        document.body.style.overflow = 'hidden'; // Disable scrolling
         const modal = document.createElement('div');
         modal.id = 'scroll-modal';
         const imageUrl = chrome.runtime.getURL('assets/' + Math.min(warnings, maxImageLevel) + '.jpg');
@@ -27,8 +25,6 @@ function showModal() {
 
         document.getElementById('dismiss-button').onclick = function () {
             modal.remove();
-            document.documentElement.style.overflow = ''; // Re-enable scrolling
-            document.body.style.overflow = ''; // Re-enable scrolling
             modalDisplayed = false;
             scrollLimit += window.innerHeight * 30; // Increase the scroll limit by 30 screen heights after dismissal
             scrollDistance = 0; // Reset scroll distance after dismissal
