@@ -1,8 +1,10 @@
+const initialScrollLimit = window.innerHeight * 20;
+const maxImageLevel = 2;
+
 let scrollDistance = 0;
-let scrollLimit = window.innerHeight * 30; // Initial scroll distance in pixels before showing the modal
+let scrollLimit = initialScrollLimit;
 let modalDisplayed = false;
 let warnings = 0;
-const maxImageLevel = 2;
 
 function showModal() {
     if (!modalDisplayed) {
@@ -26,8 +28,8 @@ function showModal() {
         document.getElementById('dismiss-button').onclick = function () {
             modal.remove();
             modalDisplayed = false;
-            scrollLimit += window.innerHeight * 30; // Increase the scroll limit by 30 screen heights after dismissal
-            scrollDistance = 0; // Reset scroll distance after dismissal
+            scrollLimit += initialScrollLimit / 2;
+            scrollDistance = 0;
             warnings += 1;
         };
     }
