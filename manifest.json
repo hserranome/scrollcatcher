@@ -15,7 +15,7 @@
     ],
     "web_accessible_resources": [
         {
-            "resources": ["modal.html", "modal.css"],
+            "resources": [],
             "matches": ["<all_urls>"]
         }
     ]
