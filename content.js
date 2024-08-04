@@ -15,7 +15,7 @@ function showModal() {
             <div class="modal-content" style="background: white; padding: 20px; border-radius: 5px; text-align: center; color: black; display: flex; flex-direction: column; align-items: center;">
                 <h2 style="margin-bottom: 20px; color: black;">Take a Break!</h2>
                 <p style="margin-bottom: 20px; color: black;">You've been scrolling a lot. Consider taking a break.</p>
-                <img src="${currLevel}.jpg" alt="Take a break image" style="margin-bottom: 20px;">
+                <img src="assets/${currLevel}.jpg" alt="Take a break image" style="margin-bottom: 20px;">
                 <button id="dismiss-button" style="margin-top: 20px;">Dismiss</button>
             </div>
         </div>
