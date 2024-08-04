@@ -1,5 +1,5 @@
-let scrollCount = 0;
-const scrollLimit = 5; // Number of scrolls before showing the modal
+let scrollDistance = 0;
+let scrollLimit = 1000; // Initial scroll distance in pixels before showing the modal
 let modalDisplayed = false;
 
 function showModal() {
@@ -21,14 +21,16 @@ function showModal() {
         document.getElementById('dismiss-button').onclick = function () {
             modal.remove();
             modalDisplayed = false;
-            scrollCount = 0; // Reset scroll count after dismissal
+            scrollLimit *= 2; // Double the scroll limit after dismissal
+            scrollDistance = 0; // Reset scroll distance after dismissal
         };
     }
 }
 
-window.addEventListener('scroll', () => {
-    scrollCount++;
-    if (scrollCount >= scrollLimit) {
+window.addEventListener('scroll', (event) => {
+    scrollDistance += Math.abs(window.scrollY - (window.oldScroll || 0));
+    window.oldScroll = window.scrollY;
+    if (scrollDistance >= scrollLimit) {
         showModal();
     }
 });
