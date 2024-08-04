@@ -1,5 +1,5 @@
 let scrollDistance = 0;
-let scrollLimit = 500; // Initial scroll distance in pixels before showing the modal
+let scrollLimit = window.innerHeight * 30; // Initial scroll distance in pixels before showing the modal
 let modalDisplayed = false;
 let warnings = 0;
 const maxImageLevel = 2;
@@ -28,7 +28,7 @@ function showModal() {
             modal.remove();
             document.body.style.overflow = ''; // Re-enable scrolling
             modalDisplayed = false;
-            scrollLimit += 500; // Increase the scroll limit by 500 pixels after dismissal
+            scrollLimit += window.innerHeight * 30; // Increase the scroll limit by 30 screen heights after dismissal
             scrollDistance = 0; // Reset scroll distance after dismissal
             warnings += 1;
         };
