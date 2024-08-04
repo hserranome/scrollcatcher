@@ -1,5 +1,5 @@
 let scrollDistance = 0;
-let scrollLimit = 1000; // Initial scroll distance in pixels before showing the modal
+let scrollLimit = 500; // Initial scroll distance in pixels before showing the modal
 let modalDisplayed = false;
 
 function showModal() {
@@ -21,7 +21,7 @@ function showModal() {
         document.getElementById('dismiss-button').onclick = function () {
             modal.remove();
             modalDisplayed = false;
-            scrollLimit *= 2; // Double the scroll limit after dismissal
+            scrollLimit += 500; // Increase the scroll limit by 500 pixels after dismissal
             scrollDistance = 0; // Reset scroll distance after dismissal
         };
     }
