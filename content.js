@@ -1,41 +1,32 @@
-// Function to send scroll increment message to the background script
-const sendScrollMessage = () => {
-    chrome.runtime.sendMessage({ type: 'incrementScroll' });
-};
+let scrollCount = 0;
+const scrollLimit = 5; // Number of scrolls before showing the modal
+let modalDisplayed = false;
 
-// Add event listeners for various scrolling inputs
-window.addEventListener('wheel', (event) => {
-    if (event.deltaY > 0) {
-        sendScrollMessage();
+function showModal() {
+    if (!modalDisplayed) {
+        modalDisplayed = true;
+        const modal = document.createElement('div');
+        modal.id = 'scroll-modal';
+        modal.innerHTML = `
+            <div class="modal-content">
+                <h2>Take a Break!</h2>
+                <p>You've been scrolling a lot. Consider taking a break.</p>
+                <button id="dismiss-button">Dismiss</button>
+            </div>
+        `;
+        document.body.appendChild(modal);
+        
+        document.getElementById('dismiss-button').onclick = function() {
+            modal.remove();
+            modalDisplayed = false;
+            scrollCount = 0; // Reset scroll count after dismissal
+        };
     }
-});
+}
 
-// Function to create and show the modal
-const showModal = () => {
-    // Create overlay
-    const overlay = document.createElement('div');
-    overlay.id = 'modalOverlay';
-    document.body.appendChild(overlay);
-
-    // Create modal
-    const modal = document.createElement('div');
-    modal.id = 'breakModal';
-    modal.innerHTML = `
-        <h1>You should take a break!</h1>
-        <button id="continueButton">Continue Scrolling</button>
-    `;
-    document.body.appendChild(modal);
-
-    // Add event listener to the button
-    document.getElementById('continueButton').addEventListener('click', () => {
-        document.body.removeChild(modal);
-        document.body.removeChild(overlay);
-    });
-};
-
-// Listen for messages from the background script
-chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
-    if (message.type === 'showModal') {
+window.addEventListener('scroll', () => {
+    scrollCount++;
+    if (scrollCount >= scrollLimit) {
         showModal();
     }
 });
