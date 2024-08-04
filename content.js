@@ -13,6 +13,7 @@ function showModal() {
             <div class="modal-content" style="background: white; padding: 20px; border-radius: 5px; text-align: center;">
                 <h2>Take a Break!</h2>
                 <p>You've been scrolling a lot. Consider taking a break.</p>
+                <img src="https://placecats.com/400/300" alt="Take a break image" style="margin-bottom: 20px;">
                 <button id="dismiss-button">Dismiss</button>
             </div>
         </div>
