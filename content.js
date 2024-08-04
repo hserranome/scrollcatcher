@@ -5,6 +5,7 @@ let modalDisplayed = false;
 function showModal() {
     if (!modalDisplayed) {
         modalDisplayed = true;
+        document.body.style.overflow = 'hidden'; // Disable scrolling
         const modal = document.createElement('div');
         modal.id = 'scroll-modal';
         modal.innerHTML = `
@@ -20,6 +21,7 @@ function showModal() {
 
         document.getElementById('dismiss-button').onclick = function () {
             modal.remove();
+            document.body.style.overflow = ''; // Re-enable scrolling
             modalDisplayed = false;
             scrollLimit += 500; // Increase the scroll limit by 500 pixels after dismissal
             scrollDistance = 0; // Reset scroll distance after dismissal
