@@ -1,63 +1,61 @@
 // Utils and constants
 const maxImageLevel = 4;
 
-const defaultUnit = 'screens';
+const defaultUnit = "screens";
 const defaultAmount = 15;
 const defaultWhitelistedDomains = [
-	'youtube.com',
-	'facebook.com',
-	'twitter.com',
-	'instagram.com',
-	'x.com',
-	'tiktok.com'
+	"youtube.com",
+	"facebook.com",
+	"twitter.com",
+	"instagram.com",
+	"x.com",
+	"tiktok.com",
 ];
+const testDomain = "html.spec.whatwg.org, "
 
 // Utils
 const getPixelsPerInch = () => {
-    const div = document.createElement('div');
-    div.style.width = '1in';
-    div.style.height = '1in';
-    div.style.position = 'absolute';
-    div.style.left = '-100%'; // Hide it
-    document.body.appendChild(div);
-    const ppi = div.clientWidth;
-    document.body.removeChild(div);
-    return ppi;
-}
-const getPixelsPerCm = () => getPixelsPerInch() / 2.54
+	const div = document.createElement("div");
+	div.style.width = "1in";
+	div.style.height = "1in";
+	div.style.position = "absolute";
+	div.style.left = "-100%"; // Hide it
+	document.body.appendChild(div);
+	const ppi = div.clientWidth;
+	document.body.removeChild(div);
+	return ppi;
+};
+const getPixelsPerCm = () => getPixelsPerInch() / 2.54;
 const cmToPixels = (cm) => cm * getPixelsPerCm();
 const getScrollLimit = (unit, amount) => {
-	if (unit === 'cm') return cmToPixels(amount);
-	if (unit === 'screens') return window.innerHeight * amount;
+	if (unit === "cm") return cmToPixels(amount);
+	if (unit === "screens") return window.innerHeight * amount;
 	return cmToPixels(500);
-}
+};
 const getValues = async () => {
 	let result = {
 		unit: defaultUnit,
 		amount: defaultAmount,
-		domains: defaultWhitelistedDomains
-	}
-	await chrome.storage.local.get(['type', 'unit', 'amount', 'domains'], (result) => {
-		if (result.type !== 'set-scroll-limit') return;
+		domains: defaultWhitelistedDomains,
+	};
+	await chrome.storage.local.get(["type", "unit", "amount", "domains"], (result) => {
+		if (result.type !== "set-scroll-limit") return;
 		result = {
 			unit: result.unit || defaultUnit,
 			amount: result.amount || defaultAmount,
-			domains: result.domains || defaultWhitelistedDomains.join(', ')
-		}
+			domains: result.domains || defaultWhitelistedDomains.join(", "),
+		};
 	});
-	return result
-}
-const getCurrentTab = async () => {
-    let queryOptions = { active: true, lastFocusedWindow: true };
-    // `tab` will either be a `tabs.Tab` instance or `undefined`.
-    let [tab] = await chrome.tabs.query(queryOptions);
-    currentDomain = tab.url;
-}
+	return result;
+};
+const currentTabIsWhitelisted = async (domains) => (testDomain + domains).includes(window.location.hostname);
 
 // Init
 const init = async () => {
 	const { unit, amount, domains } = await getValues();
+	if (!(await currentTabIsWhitelisted(domains))) return;
 	const initialScrollLimit = getScrollLimit(unit, amount);
+
 	let scrollLimit = initialScrollLimit;
 	let scrollDistance = 0;
 	let modalDisplayed = false;
@@ -65,37 +63,37 @@ const init = async () => {
 
 	const handleScroll = () => {
 		const newScroll = window.scrollY;
-	
+
 		// if scrolling down, add scroll distance
 		if (newScroll > (window.oldScroll || 0)) scrollDistance += newScroll - (window.oldScroll || 0);
 		// if scroll up, substract scroll distance
 		else if (newScroll < (window.oldScroll || 0)) scrollDistance -= (window.oldScroll || 0) - newScroll;
-	
+
 		window.oldScroll = window.scrollY;
 		if (scrollDistance >= scrollLimit) showModal();
-	}
-	
-	window.addEventListener('scroll', handleScroll);
-	
+	};
+
+	window.addEventListener("scroll", handleScroll);
+
 	const showModal = () => {
 		if (modalDisplayed) return;
-	
+
 		modalDisplayed = true;
-	
-		const modal = document.createElement('div');
-		modal.id = 'scroll-modal';
-		const imageId = Math.min(warnings, maxImageLevel)
+
+		const modal = document.createElement("div");
+		modal.id = "scroll-modal";
+		const imageId = Math.min(warnings, maxImageLevel);
 		const imageOriginalUrl = `assets/${imageId}.jpg`;
 		const imageUrl = chrome.runtime ? chrome.runtime.getURL(imageOriginalUrl) : imageOriginalUrl;
-		const windowsScrolled = Math.round(scrollDistance / window.innerHeight)
-		const warningCount = warnings + 1
+		const windowsScrolled = Math.round(scrollDistance / window.innerHeight);
+		const warningCount = warnings + 1;
 		modal.innerHTML = htmlTemplate
-			.replace('{{imageUrl}}', imageUrl)
-			.replace('{{windowsScrolled}}', windowsScrolled)
-			.replace('{{warningCount}}', warningCount);
+			.replace("{{imageUrl}}", imageUrl)
+			.replace("{{windowsScrolled}}", windowsScrolled)
+			.replace("{{warningCount}}", warningCount);
 		document.body.appendChild(modal);
-	
-		document.getElementById('scrollcatcher-dismiss-button').onclick = () => {
+
+		document.getElementById("scrollcatcher-dismiss-button").onclick = () => {
 			modal.remove();
 			modalDisplayed = false;
 			scrollLimit += initialScrollLimit;
@@ -103,12 +101,12 @@ const init = async () => {
 			warnings += 1;
 		};
 
-		document.getElementById('scrollcatcher-abort-button').onclick = () => {
-			window.removeEventListener('scroll', handleScroll);
+		document.getElementById("scrollcatcher-abort-button").onclick = () => {
+			window.removeEventListener("scroll", handleScroll);
 			modal.remove();
 		};
-	}
-}
+	};
+};
 init();
 
 // Template for modal
@@ -220,4 +218,4 @@ const htmlTemplate = `
 </div>
 <style>
 </style>
-`
+`;
