@@ -53,6 +53,7 @@ This extension was built using a combination of manual coding and assistance fro
 
 ## To do
 
+- Not working on Tiktok/Instagram Reels/Youtube Shorts
 - Add settings for user adjustments
 - Create icon (tired/angry cat face)
 - Publish as public extensions
