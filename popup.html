@@ -1,26 +1,79 @@
 <body>
-	<h1>hello there - test</h1>
-	<button class="scrollcatcher-button">Save</button>
-	<style>
-		.scrollcatcher-button {
-			display: inline-block;
-			outline: 0;
-			cursor: pointer;
-			border: 2px solid #000;
-			border-radius: 3px;
-			color: #000;
-			background: #fff;
-			font-size: 14px;
-			font-weight: 600;
-			line-height: 28px;
-			padding: 8px 12px;
-			text-align: center;
-			transition-duration: 0.15s;
-			transition-property: all;
-			transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
-			:hover {
-				background: rgb(251, 193, 245);
-			}
-		}
-	</style>
+	<main class="container">
+		<h1>ScrollCatcher</h1>
+		<p>Choose how often you want to see the warning</p>
+		<form class="form">
+			<div class="input-container">
+				<label  class="label" for="unit">Unit</label>
+				<select name="unit" id="unit">
+					<option value="cm">cm</option>
+					<option value="screens">screens</option>
+				</select>
+			</div>
+			<div class="input-container">
+				<label  class="label" for="amount">Value</label>
+				<input type="number" name="amount" id="amount" />
+			</div>
+			<div class="input-container">
+				<label  class="label" for="domains">Sites to catch you scrolling</label>
+				<textarea type="textarea" name="domains" id="domains" rows="5"></textarea>
+				<p class="input-description">Separate with a comma</p>
+			</div>
+			<button id="save-button" class="scrollcatcher-button">Save</button>
+		</form>
+	</main>
+
 </body>
+<script src="popup.js"></script>
+<style>
+	body {
+		margin: 0;
+		background: #f5f5f5;
+		font-family: arial;
+		font-size: 14px;
+	}
+	textarea { resize: vertical; }
+	.container {
+		margin: 0;
+		padding: 1.5rem 1rem;
+		width: 280px;
+		box-sizing: border-box;
+	}
+	.form {
+		display: flex;
+		flex-direction: column;
+	}
+	.label {
+		font-weight: bold;
+		margin-bottom: 0.5rem;
+	}
+	.input-container {
+		display: flex;
+		flex-direction: column;
+		margin-bottom: 1rem;
+	}
+	.input-description {
+		margin-top: 0.25rem;
+		font-size: 12px;
+	}
+	.scrollcatcher-button {
+		display: inline-block;
+		outline: 0;
+		cursor: pointer;
+		border: 2px solid #000;
+		border-radius: 3px;
+		color: #000;
+		background: #fff;
+		font-size: 14px;
+		font-weight: 600;
+		line-height: 18px;
+		padding: 8px 12px;
+		text-align: center;
+		transition-duration: 0.15s;
+		transition-property: all;
+		transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
+	}
+	.scrollcatcher-button:hover {
+		background: rgb(251, 193, 245);
+	}
+</style>
