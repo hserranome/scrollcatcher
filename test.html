@@ -1,0 +1,52 @@
+<!-- This is a test page to test the content script on scroll -->
+<!-- We'll dinamically create sections using JavaScript  -->
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<title>Scroll catcher test page</title>
+	<script src="content.js"></script>
+</head>
+<body>
+	<div id="body">
+		<section id="section">
+			<h1>Test</h1>
+			<p>Lorem ipsum dolor sit amet consectetur, adipisicing elit. Impedit ab voluptatem sed tenetur eligendi corrupti perspiciatis fuga autem aliquam cupiditate sunt, nisi non quis quos quo alias officia labore soluta?</p>
+			<hr/>
+			<h2>Test</h2>
+			<p>Lorem ipsum dolor sit amet consectetur adipisicing elit. Non dolorem dolores eos aut assumenda delectus, perferendis aliquam exercitationem. Dolorem, adipisci minus voluptatibus sunt excepturi deserunt. Accusantium beatae alias saepe a.</p>
+			<hr/>
+			<h3>Test</h3>
+			<p>Lorem ipsum dolor sit amet consectetur adipisicing elit. Officia eos ex doloribus voluptatibus saepe iste velit earum, eligendi nobis corporis dolores ad, nihil dolore dolor optio. Voluptate impedit hic labore.</p>
+			<hr/>
+			<h4>Test</h4>
+			<p>Lorem ipsum dolor sit amet consectetur adipisicing elit. Earum provident ducimus, id ipsa nihil cum doloribus iure minus repellendus sunt eaque, nisi blanditiis commodi asperiores, iusto voluptate excepturi hic tempore?</p>
+			<hr/>
+			<h5>Test</h5>
+			<p>Lorem ipsum dolor sit amet consectetur adipisicing elit. Vitae, accusamus quod esse blanditiis, omnis exercitationem atque fugit consequuntur laudantium tenetur laboriosam corrupti quis ipsa deserunt maxime eius pariatur aspernatur eum.</p>
+			<hr>
+			<h6>Test</h6>
+			<p>Lorem ipsum dolor sit amet consectetur adipisicing elit. Officia et cupiditate nam expedita, laudantium velit nemo corporis. Error voluptas consectetur hic quibusdam. Soluta minus a reprehenderit enim dolorum quod dicta.</p>
+			<hr/>
+			<p>Lorem ipsum dolor sit amet, consectetur adipisicing elit. Odit dolorem vero maxime doloremque! A quaerat aspernatur, veritatis quasi vel aperiam asperiores reiciendis laborum rem quia, molestiae inventore, voluptates neque tenetur?</p>
+			<hr/>
+		</section>
+	</div>
+</body>
+<script>
+	const body = document.getElementById('body');
+	const section = document.getElementById('section');
+	const repeatTimes = 100;
+	for (let i = 0; i < repeatTimes; i++) {
+		const newSection = section.cloneNode(true);
+		body.appendChild(newSection);
+		// append an item that shows the position in pixels of itself
+		newSection.innerHTML += `<b style="font-size: 48px" id="p${i}"/>`;
+		const p = document.getElementById('p' + i);
+		const pPosition = p.getBoundingClientRect().top;
+		p.innerHTML += 'Position: ' + pPosition;
+	}
+</script>
+</html>
