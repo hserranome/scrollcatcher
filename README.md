@@ -5,7 +5,7 @@
 Chrome extensions that check how much you've scrolled down, and shows a pic of my cat with a reminder that you are probably wasting your time when you've scrolled a certain amount.
 
 <!-- image -->
-![example of how it looks](example.jpg)
+![example of how it looks](example1.jpg)
 
 ## Installation
 
