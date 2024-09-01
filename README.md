@@ -57,3 +57,4 @@ This extension was built using a combination of manual coding and assistance fro
 - Add settings for user adjustments
 - Create icon (tired/angry cat face)
 - Publish as public extensions
+- Resize images by a lot
