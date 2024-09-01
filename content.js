@@ -1,6 +1,18 @@
 // Utils and constants
 const maxImageLevel = 4;
 
+const defaultUnit = 'screens';
+const defaultAmount = 15;
+const defaultWhitelistedDomains = [
+	'youtube.com',
+	'facebook.com',
+	'twitter.com',
+	'instagram.com',
+	'x.com',
+	'tiktok.com'
+];
+
+// Utils
 const getPixelsPerInch = () => {
     const div = document.createElement('div');
     div.style.width = '1in';
@@ -14,72 +26,90 @@ const getPixelsPerInch = () => {
 }
 const getPixelsPerCm = () => getPixelsPerInch() / 2.54
 const cmToPixels = (cm) => cm * getPixelsPerCm();
+const getScrollLimit = (unit, amount) => {
+	if (unit === 'cm') return cmToPixels(amount);
+	if (unit === 'screens') return window.innerHeight * amount;
+	return cmToPixels(500);
+}
+const getValues = async () => {
+	let result = {
+		unit: defaultUnit,
+		amount: defaultAmount,
+		domains: defaultWhitelistedDomains
+	}
+	await chrome.storage.local.get(['type', 'unit', 'amount', 'domains'], (result) => {
+		if (result.type !== 'set-scroll-limit') return;
+		result = {
+			unit: result.unit || defaultUnit,
+			amount: result.amount || defaultAmount,
+			domains: result.domains || defaultWhitelistedDomains.join(', ')
+		}
+	});
+	return result
+}
+const getCurrentTab = async () => {
+    let queryOptions = { active: true, lastFocusedWindow: true };
+    // `tab` will either be a `tabs.Tab` instance or `undefined`.
+    let [tab] = await chrome.tabs.query(queryOptions);
+    currentDomain = tab.url;
+}
 
 // Init
+const init = async () => {
+	const { unit, amount, domains } = await getValues();
+	const initialScrollLimit = getScrollLimit(unit, amount);
+	let scrollLimit = initialScrollLimit;
+	let scrollDistance = 0;
+	let modalDisplayed = false;
+	let warnings = 0;
 
+	const handleScroll = () => {
+		const newScroll = window.scrollY;
+	
+		// if scrolling down, add scroll distance
+		if (newScroll > (window.oldScroll || 0)) scrollDistance += newScroll - (window.oldScroll || 0);
+		// if scroll up, substract scroll distance
+		else if (newScroll < (window.oldScroll || 0)) scrollDistance -= (window.oldScroll || 0) - newScroll;
+	
+		window.oldScroll = window.scrollY;
+		if (scrollDistance >= scrollLimit) showModal();
+	}
+	
+	window.addEventListener('scroll', handleScroll);
+	
+	const showModal = () => {
+		if (modalDisplayed) return;
+	
+		modalDisplayed = true;
+	
+		const modal = document.createElement('div');
+		modal.id = 'scroll-modal';
+		const imageId = Math.min(warnings, maxImageLevel)
+		const imageOriginalUrl = `assets/${imageId}.jpg`;
+		const imageUrl = chrome.runtime ? chrome.runtime.getURL(imageOriginalUrl) : imageOriginalUrl;
+		const windowsScrolled = Math.round(scrollDistance / window.innerHeight)
+		const warningCount = warnings + 1
+		modal.innerHTML = htmlTemplate
+			.replace('{{imageUrl}}', imageUrl)
+			.replace('{{windowsScrolled}}', windowsScrolled)
+			.replace('{{warningCount}}', warningCount);
+		document.body.appendChild(modal);
+	
+		document.getElementById('scrollcatcher-dismiss-button').onclick = () => {
+			modal.remove();
+			modalDisplayed = false;
+			scrollLimit += initialScrollLimit;
+			scrollDistance = 0;
+			warnings += 1;
+		};
 
-const getScrollLimit = () => {
-    // window height
-    // const windowHeight = window.innerHeight;
-    // const screensToScroll = 10;
-    // const settedScrollLimit = windowHeight * screensToScroll;
-
-    // cm
-    const defaultCmToScroll = 500;
-    const cmToScroll = defaultCmToScroll;
-    return cmToPixels(cmToScroll);
+		document.getElementById('scrollcatcher-abort-button').onclick = () => {
+			window.removeEventListener('scroll', handleScroll);
+			modal.remove();
+		};
+	}
 }
-
-
-let scrollLimit = getScrollLimit();
-let scrollDistance = 0;
-let modalDisplayed = false;
-let warnings = 0;
-
-console.debug('scrollcatcher debug:', {
-    cmToPixel: getPixelsPerCm(),
-    cm: cmToPixels(34.5), 
-    settedScrollLimit,
-})
-
-window.addEventListener('scroll', () => {
-    const newScroll = window.scrollY;
-
-    // if scrolling down, add scroll distance
-    if (newScroll > (window.oldScroll || 0)) scrollDistance += newScroll - (window.oldScroll || 0);
-    // if scroll up, substract scroll distance
-    else if (newScroll < (window.oldScroll || 0)) scrollDistance -= (window.oldScroll || 0) - newScroll;
-
-    window.oldScroll = window.scrollY;
-    if (scrollDistance >= scrollLimit) showModal();
-});
-
-const showModal = () => {
-    if (modalDisplayed) return;
-
-    modalDisplayed = true;
-
-    const modal = document.createElement('div');
-    modal.id = 'scroll-modal';
-    const imageId = Math.min(warnings, maxImageLevel)
-    const imageOriginalUrl = `assets/${imageId}.jpg`;
-    const imageUrl = chrome.runtime ? chrome.runtime.getURL(imageOriginalUrl) : imageOriginalUrl;
-    const windowsScrolled = Math.round(scrollDistance / window.innerHeight)
-    const warningCount = warnings + 1
-    modal.innerHTML = htmlTemplate
-        .replace('{{imageUrl}}', imageUrl)
-        .replace('{{windowsScrolled}}', windowsScrolled)
-        .replace('{{warningCount}}', warningCount);
-    document.body.appendChild(modal);
-
-    document.getElementById('scrollcatcher-dismiss-button').onclick = () => {
-        modal.remove();
-        modalDisplayed = false;
-        scrollLimit += settedScrollLimit;
-        scrollDistance = 0;
-        warnings += 1;
-    };
-}
+init();
 
 // Template for modal
 const htmlTemplate = `
@@ -128,7 +158,7 @@ const htmlTemplate = `
 			<img src="{{imageUrl}}" alt="Cat image" style="margin-bottom: 20px; width: 100%; border-radius: 14px" />
 			<div style="display: flex">
 				<button
-					id="dismiss-button"
+					id="scrollcatcher-dismiss-button"
 					style="
 						margin-top: 20px;
 						display: inline-block;
@@ -153,10 +183,10 @@ const htmlTemplate = `
 						}
 					"
 				>
-					Dismiss. I want to waste even more time scrolling.
+					Dismiss. <br/>I want to waste even more time scrolling.
 				</button>
 				<button
-					id="scrollcatcher-dismiss-button"
+					id="scrollcatcher-abort-button"
 					style="
 						margin-top: 20px;
 						display: inline-block;
@@ -182,7 +212,7 @@ const htmlTemplate = `
 						}
 					"
 				>
-					I'm actually doing something productive or I just don't care. Don't bother me.
+					Don't bother me. <br/> I'm actually doing something productive or I just don't care. 
 				</button>
 			</div>
 		</div>
