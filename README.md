@@ -2,13 +2,22 @@
 
 ## Functionality
 
-This Chrome extension is designed to help users avoid mindlessly scrolling on websites with infinite scroll. It tracks the user's scroll distance and displays a modal reminding them to take a break after a certain distance has been scrolled. The initial scroll distance is set to 30 screen heights, and this distance increases each time the modal is dismissed. The modal also displays an image and a message to encourage the user to take a break.
+Chrome extensions that check how much you've scrolled down, and shows a pic of my cat with a reminder that you are probably wasting your time when you've scrolled a certain amount.
 
-### Key Features
-- Tracks scroll distance and displays a modal after a certain distance.
-- Increases the required scroll distance each time the modal is dismissed.
-- Displays an image and a message in the modal.
-- Ensures the modal is displayed in the center of the screen.
+<!-- image -->
+![example of how it looks](example.jpg)
+
+## Installation
+
+1. Clone the repository.
+2. Open Chrome and navigate to `chrome://extensions/`.
+3. Enable "Developer mode" in the top right corner.
+4. Click "Load unpacked" and select the directory containing the extension files.
+
+## Usage
+
+Once installed, the extension will automatically track your scroll distance on any website. When you reach the scroll limit, a modal will appear reminding you to take a break. Dismiss the modal to continue scrolling, and the scroll limit will increase for the next reminder.
+
 
 ## How It Was Built
 
@@ -42,13 +51,8 @@ This extension was built using a combination of manual coding and assistance fro
     - The extension was refined to ensure it only takes into account scrolling down and to prevent the page from jumping to the top when the modal is displayed.
     - Prompt: "Make it so the script only takes into account scrolling down."
 
-## Installation
+## To do
 
-1. Clone the repository.
-2. Open Chrome and navigate to `chrome://extensions/`.
-3. Enable "Developer mode" in the top right corner.
-4. Click "Load unpacked" and select the directory containing the extension files.
-
-## Usage
-
-Once installed, the extension will automatically track your scroll distance on any website. When you reach the scroll limit, a modal will appear reminding you to take a break. Dismiss the modal to continue scrolling, and the scroll limit will increase for the next reminder.
+- Add settings for user adjustments
+- Create icon (tired/angry cat face)
+- Publish as public extensions
