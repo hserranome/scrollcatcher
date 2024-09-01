@@ -16,8 +16,7 @@ const domains = document.querySelector("#domains");
 const button = document.querySelector("#save-button");
 
 const init = () => {
-	chrome.storage.local.get(["type", "unit", "amount"], (result) => {
-		if (result.type !== "set-scroll-limit") return;
+	chrome.storage.local.get(["unit", "amount", "domains"], (result) => {
 		unit.value = result.unit || defaultUnit;
 		amount.value = result.amount || defaultAmount;
 		domains.value = result.domains || defaultWhitelistedDomains.join(", ");
@@ -32,7 +31,6 @@ form.addEventListener("change", () => {
 form.addEventListener("submit", (event) => {
 	event.preventDefault();
 	chrome.storage.local.set({
-		type: "set-scroll-limit",
 		unit: unit.value,
 		amount: amount.value,
 		domains: domains.value,

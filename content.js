@@ -1,6 +1,4 @@
 // Utils and constants
-const maxImageLevel = 4;
-
 const defaultUnit = "screens";
 const defaultAmount = 15;
 const defaultWhitelistedDomains = [
@@ -11,7 +9,9 @@ const defaultWhitelistedDomains = [
 	"x.com",
 	"tiktok.com",
 ];
-const testDomain = "html.spec.whatwg.org, "
+
+const maxImageLevel = 4;
+const testDomain = "html.spec.whatwg.org, ";
 
 // Utils
 const getPixelsPerInch = () => {
@@ -33,20 +33,15 @@ const getScrollLimit = (unit, amount) => {
 	return cmToPixels(500);
 };
 const getValues = async () => {
-	let result = {
-		unit: defaultUnit,
-		amount: defaultAmount,
-		domains: defaultWhitelistedDomains,
-	};
-	await chrome.storage.local.get(["type", "unit", "amount", "domains"], (result) => {
-		if (result.type !== "set-scroll-limit") return;
-		result = {
+	let values = {};
+	await chrome.storage.local.get(["unit", "amount", "domains"], (result) => {
+		values = {
 			unit: result.unit || defaultUnit,
 			amount: result.amount || defaultAmount,
 			domains: result.domains || defaultWhitelistedDomains.join(", "),
 		};
 	});
-	return result;
+	return values;
 };
 const currentTabIsWhitelisted = async (domains) => (testDomain + domains).includes(window.location.hostname);
 
